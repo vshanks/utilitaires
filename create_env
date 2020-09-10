@@ -1,0 +1,91 @@
+#!/bin/bash
+
+usage() {
+	echo "Creates a python3 virtual environment and installs jupyter if selected"
+	echo "-----ARGUMENTS-----"
+	echo "	-n|-name={ENV_NAME}			Required, name of the virtual environment to be created"
+	echo "	-l|-loc={PATH TO CREATE ENV IN}		Optional, path location that you want this environment to be created in"
+	echo "						If blank, will be created in the current directory"
+	echo "	-j|-jupyter={y/n}			Optional, Should I install jupyter notebooks in this env?"
+	echo "  -d|-datascience={y/n}			Optional, Should I install data science libs pandas, matplotlib, plotly_express, seaborn, plotly in this env?"
+	exit 0
+}
+
+
+create_virtual_env() {
+	echo "Attempting to make python3 virtual env in $LOCATION"
+	echo "If successful, look for $LOCATION/$ENV_NAME"
+	cd "$LOCATION"
+	pip3 install -U pip
+	python3 -m venv $ENV_NAME
+	source $ENV_NAME/bin/activate
+	if [ "$3" == true ];
+	then
+		pip3 install jupyter
+		pip3 install ipykernel
+		python3 -m ipykernel install --user --name $ENV_NAME --display-name "PY3 $ENV_NAME"
+	fi
+	if [ "$4" == true ];
+	then
+		pip3 install pandas
+		pip3 install matplotlib
+		pip3 install plotly_express
+		pip3 install seaborn
+		pip3 install plotly
+	fi
+	pip3 install --upgrade pip
+}
+
+ENV_NAME=""
+LOCATION="."
+CUR_DIR=`pwd`
+JUP_FLAG=false
+DS_FLAG=false
+
+if [ "$1" == "" ];
+then
+	usage
+	exit
+else
+	for i in "$@"
+	do
+		case $1 in
+			-n=* | --name=* )
+				ENV_NAME="${i#*=}"
+				echo "$ENV_NAME"
+				shift
+				;;
+			-h | --help )
+				echo "HELP"
+				usage
+				exit
+				;;
+			-l=* | -loc=* )
+				LOCATION="${i#*=}"
+				echo "$LOCATION"
+				shift
+				;;
+			-j=* | --jupyter=* )
+				if [ "${i#*=}" == "y" ];
+				then
+					JUP_FLAG=true
+				fi
+				shift
+				;;
+			-d=* | --datascience=* )
+				if [ "${i#*=}" == "y" ];
+				then
+					DS_FLAG=true
+				fi
+				shift
+				;;
+			* )
+				echo "*"
+				usage
+				exit
+				;;
+		esac
+	done
+fi
+
+create_virtual_env $ENV_NAME $LOCATION $JUP_FLAG $DS_FLAG
