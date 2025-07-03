@@ -1,0 +1,18 @@
+.header-wrapper.header-scrolled {
+    background-color: var(--neutral--non-white-bg);
+    box-shadow: 0 3px 10px 3px #0003
+}
+
+.logo-div-block.logo-scrolled-inverted-light {
+    filter: grayscale();
+    transition: all .5s cubic-bezier(.25,.46,.45,.94)
+}
+
+.logo-div-block.logo-scrolled-inverted {
+    filter: grayscale()invert();
+    transition: all .5s cubic-bezier(.25,.46,.45,.94)
+}
+
+.hamburger-menu-bar.top.burger-scrolled,.hamburger-menu-bar.bottom.burger-scrolled {
+        background-color: var(--neutral--800)
+    }
